@@ -8,7 +8,7 @@ from App.database import db, get_migrate
 from App.main import create_app
 from App.controllers import ( create_user, get_all_users_json, get_all_users )
 
-from App.models import db, Movie
+from App.models import *
 # Movie API Auth
 import requests
 
@@ -33,6 +33,10 @@ migrate = get_migrate(app)
 def initialize():
     db.drop_all()
     db.create_all()
+
+    # Test render
+    print('Currently in initialize')
+    
     create_user('BobTheBuilder', 'bob', 'bobpass')
 
     # Import movie files from API
