@@ -33,6 +33,10 @@ migrate = get_migrate(app)
 def initialize():
     db.drop_all()
     db.create_all()
+
+    # Test render
+    print('Currently in initialize')
+    
     create_user('BobTheBuilder', 'bob', 'bobpass')
 
     # Import movie files from API
