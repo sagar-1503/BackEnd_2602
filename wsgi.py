@@ -8,9 +8,12 @@ from App.database import db, get_migrate
 from App.main import create_app
 from App.controllers import ( create_user, get_all_users_json, get_all_users )
 
+# Temp imports
 from App.models import *
-# Movie API Auth
 import requests
+import logging  # Import the logging module
+
+# Movie API Auth
 
 # Perfom an auth on the Movie List API 
 authUrl = "https://api.themoviedb.org/3/authentication"
@@ -21,12 +24,17 @@ authHeaders = {
 }
 
 authResponse = requests.get(authUrl, headers=authHeaders)
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+
 # End of auth
 
 # This commands file allow you to create convenient CLI commands for testing controllers
 
 app = create_app()
 migrate = get_migrate(app)
+
 
 # This command creates and initializes the database
 @app.cli.command("init", help="Creates and initializes the database")
@@ -35,8 +43,8 @@ def initialize():
     db.create_all()
 
     # Test render
-    print('Currently in initialize')
-    
+    logging.info('Currently in initialize')
+
     create_user('BobTheBuilder', 'bob', 'bobpass')
 
     # Import movie files from API
@@ -72,6 +80,8 @@ def initialize():
             existing_movie = Movie.query.filter_by(id=movie.get('id')).first()
             if existing_movie:
                 # If a movie with the same ID already exists, skip adding it
+                continue
+            if movie.get('id') == 16323:
                 continue
 
             # Get genre names corresponding to the genre IDs
