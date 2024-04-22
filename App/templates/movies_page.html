@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Wonder Movies</title>
+        <link rel="stylesheet" href="static/style.css">
+        <link rel="icon" type="image/png" href="https://cdn.discordapp.com/attachments/752212043125227571/1227669996369612830/oie_gsII4R2sd8Ea.png?ex=66293fc8&is=6616cac8&hm=9e9ff980dd2ad487353b1054d4d1295c9981be4941cb9b815241c76b05f381ac&">
+        
+        <!-- To show black hole when loading -->
+        <video id="videoFG" autoplay loop muted>
+            <source src="https://cdn.discordapp.com/attachments/752212043125227571/1228438907893452900/Blackhole.mp4?ex=662c0be2&is=661996e2&hm=917ee26f17eae9a01c4561216167137832fb20d3478c35f61065c9f0b3836277&"
+                type="video/mp4">
+        </video>
+    </head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <!-- Login/Show Account -->
+        <div class="sidebar-item">
+            <a id="sidebar-anchor" href="#" onclick="showLoginPage()">
+                <img id="sidebar-img" src="https://cdn.discordapp.com/attachments/752212043125227571/1227674896549548152/pngwing.com_1.png?ex=66294458&is=6616cf58&hm=9fba2b1d50bbff2353f341be5e54a04dfb7cf6f0c135c718b7bf60cb7f96ba95&">
+            </a>
+        </div>
+        <!-- Redirect to Home Page -->
+        <div class="sidebar-item">
+            <a id="sidebar-anchor" href="/home">
+                <img id="sidebar-img" src="https://cdn.discordapp.com/attachments/752212043125227571/1227673202642391261/home-house-silhouette-icon-building--public-domain-pictures--20.png?ex=662942c4&is=6616cdc4&hm=2410703968ad54c3fd360166e242ec80e32bd40709301b39a5be9419ea6ce252&">
+            </a>
+        </div>
+        <!-- Redirect to Movies Page -->
+        <div class="sidebar-item">
+            <a id="sidebar-anchor" href="/movies">
+                <img id="sidebar-img" src="https://cdn.discordapp.com/attachments/752212043125227571/1230235738097057843/pngwing.com_3.png?ex=66329550&is=66202050&hm=dd7c9fc7435e4450fd51d3b58147d0a5a643081997c408caf678a5f13454647d&">
+            </a>
+        </div>
+        <!-- Redirect to Wishlist Page -->
+        <div class="sidebar-item">
+            <a id="sidebar-anchor" href="/watchlist">
+                <img id="sidebar-img" src="https://cdn.discordapp.com/attachments/752212043125227571/1227674087158190180/3515492.png?ex=66294397&is=6616ce97&hm=1760b25f14a67943d2aeef5da295e675e7c0d5205d9b0ed2adf98dbb1b98f20d&"> 
+            </a>
+        </div>
+        <!-- Redirect to User Reviews Page -->
+        <div class="sidebar-item">
+            <a id="sidebar-anchor" href="/reviews">
+                <img id="sidebar-img" src="https://cdn.discordapp.com/attachments/752212043125227571/1227674798163890326/pngwing.com.png?ex=66294440&is=6616cf40&hm=91e6642db815f92cf5e37daac268a4f8395e5623e01c8b38d87afd84e1c73422&">     
+            </a>
+        </div>
+    </div>
+    <div class="sidebar-panel" id="sidebar-panel">
+        <div id="login">
+            {% if is_authenticated %}
+                <h1 class="panel-text" style="font-size: 6vh;">Welcome, {{ current_user.username }} </h1>
+                
+                <form id="logout-form" action="/logout">
+                    <button class="login-submit" type="submit">
+                        <span class="login-button-text">Logout</span>
+                    </button>
+                </form>
+            {% else %}
+                <form id="login-form" action="/login" method="POST">
+                    <h1 id="login-header">Login</h1>
+
+                    <input class="login-input" placeholder="Username" name="username" type="text" class="validate" required>
+                    <input class="login-input" placeholder="Password" name="password" type="password" class="validate" required>
+
+                    <button class="login-submit" type="submit">
+                        <span class="login-button-text">Login</span>
+                    </button>
+
+                    <div class="login-signup-action">
+                        <p class="login-input">Aren't registered with us?</p>
+                        <a class="login-input-anchor" onclick="showSignupPage()">Signup</a>
+                    </div>
+                </form>
+
+                <form id="signup-form" action="/signup" method="POST">
+                    <h1 id="login-header">Signup</h1>
+
+                    <input class="login-input" placeholder="Display Name" name="display_name" type="text" class="validate" required>
+                    <input class="login-input" placeholder="Username" name="username" type="text" class="validate" required>
+                    <input class="login-input" placeholder="Password" name="password" type="password" class="validate" required>
+
+                    <button class="login-submit" type="submit">
+                        <span class="login-button-text">Signup</span>
+                    </button>
+
+                    <div class="login-signup-action">
+                        <p class="login-input">Already registered with us?</p>
+                        <a class="login-input-anchor" onclick="showLoginForm()">Login</a>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+
+        <div id="panel-items">
+            <!-- Login/Show Account -->
+            <div class="panel-item" onclick="showLoginPage()">
+                {% if is_authenticated %}
+                    <h1 class="panel-text">Welcome back, {{ current_user.username }}</h1>
+                {% else %}
+                    <h1 class="panel-text">Login /Signup</h1>
+                {% endif %}
+            </div>
+            <!-- Redirect to Home Page -->
+            <div class="panel-item" onclick="window.location.href = '/home'">
+                <h1 class="panel-text">Home Page</h1>
+            </div>
+            <!-- Redirect to Movies Page -->
+            <div class="panel-item" onclick="window.location.href = '/movies'">
+                <h1 class="panel-text">View Movies</h1>
+            </div>
+            <!-- Redirect to Wishlist Page -->
+            <div class="panel-item" onclick="window.location.href = '/watchlist'">
+                <h1 class="panel-text">View Your Watchlist</h1>
+            </div>
+            <!-- Redirect to User Reviews Page -->
+            <div class="panel-item" onclick="window.location.href = '/reviews'">
+                <h1 class="panel-text">View Your Reviews</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="blur-containter">
+            <div class="blur-overlay"></div>
+            
+            <div id="homeContent">
+                <a id="pageTitle" href="/home">Wonder</a>
+                <a id="homeImage" href="/home">
+                    <img id="homeImage" src="https://cdn.discordapp.com/attachments/752212043125227571/1227669996369612830/oie_gsII4R2sd8Ea.png?ex=66293fc8&is=6616cac8&hm=9e9ff980dd2ad487353b1054d4d1295c9981be4941cb9b815241c76b05f381ac&">
+                </a>
+                <a id="pageTitle" href="/home">Movies</a>
+            </div>
+                
+            <form class="search-form" action="/movies" method="GET">
+                <input class="movieSearch" type="text" name="s" placeholder="Search by movie title...">
+                <button class="movieSearch" type="submit">
+                    <img id="movieSearchImg" src="https://cdn.discordapp.com/attachments/752212043125227571/1228739598692384778/pngwing.com_2.png?ex=662d23ed&is=661aaeed&hm=f5cfb2935eb9e7890e216a250fa602c28b27d07b00e052b3615bc2855cc0b145&" alt="Search">
+                </button>
+            </form>
+        </div>
+
+        <div class="background-container"></div>
+
+        <!-- Add sorting option -->
+
+        <!-- Second Row -->
+        <video id="videoBG" autoplay loop muted>
+            <source src="https://cdn.discordapp.com/attachments/752212043125227571/1228163328782635059/Moonshower_2.mp4?ex=662b0b3b&is=6618963b&hm=4f82b9b015b4bcd9444eabef9d4db39e2fcaf7032e3306d688d883b5bd783694&"
+                type="video/mp4">
+        </video>
+
+        <!-- Show page numbers at top -->
+        <div class="pageList">
+            {% set maxPage = total // page_count %}
+
+            {% if maxPage > 4 %}
+                <!-- To iterate to the previous page -->
+                {% if current_page > 1 %}
+                    <div id="numberCard">
+                        <a id="cardDetailsAnchor_prev1" href="/movies?page=1">
+                            <p id="cardNext"> < </p>
+                        </a>
+                    </div>
+                {% endif %}
+
+                <div id="numberCard">
+                    <a id="cardDetailsAnchor_1" href="/movies?page=1">
+                        <p id="cardDetails"> 1 </p>
+                    </a>
+                </div>
+
+                {% for i in range(current_page + 1, current_page + 4) %}
+                    {% if i > 0 and i <= maxPage %}
+                        <div id="numberCard">
+                            <a id="cardDetailsAnchor{{ i }}" href="/movies?page={{ i }}">
+                                <p id="cardDetails"> {{ i }} </p>
+                            </a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- To iterate to the next page -->
+                {% if current_page <= maxPage %}
+                    <div id="numberCard">
+                        <a id="cardDetailsAnchor_next1" href="/movies?page=1">
+                            <p id="cardNext"> > </p>
+                        </a>
+                    </div>
+                {% endif %}
+            {% else %}
+                {% for i in range(1, (maxPage + 1)) %}
+                    <div id="numberCard">
+                        <p id="cardDetails"> {{ i }} </p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- List of movies -->
+        <div id="moviesList">
+            {% for movie in movies %}
+                <div class="movieCard">
+                    <a id="movieLink" href="/{{ movie.href }}/review">
+                        <img id="movieCardImg" src ="{{ movie.thumbnail }}">
+                        <p id="movieDetails">{{ movie.title }}</p>
+                        <p id="movieDetails">{{ movie.release_date }}</p>
+                    </a>
+                </div>
+            {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Show page numbers at bottom -->
+        <div class="pageList">
+            {% set maxPage = total // page_count %}
+
+            {% if maxPage > 4 %}
+                <!-- To iterate to the previous page -->
+                {% if current_page > 1 %}
+                    <div id="numberCard">
+                        <a id="cardDetailsAnchor_prev2" href="/movies?page=1">
+                            <p id="cardNext"> < </p>
+                        </a>
+                    </div>
+                {% endif %}
+
+                <div id="numberCard">
+                    <a id="cardDetailsAnchor_1" href="/movies?page=1">
+                        <p id="cardDetails"> 1 </p>
+                    </a>
+                </div>
+
+                {% for i in range(current_page + 1, current_page + 4) %}
+                    {% if i > 0 and i <= maxPage %}
+                        <div id="numberCard">
+                            <a id="cardDetailsAnchor{{ i }}" href="/movies?page={{ i }}">
+                                <p id="cardDetails"> {{ i }} </p>
+                            </a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- To iterate to the next page -->
+                {% if current_page <= maxPage %}
+                    <div id="numberCard">
+                        <a id="cardDetailsAnchor_next2" href="/movies?page=1">
+                            <p id="cardNext"> > </p>
+                        </a>
+                    </div>
+                {% endif %}
+            {% else %}
+                {% for i in range(1, (maxPage + 1)) %}
+                    <div id="numberCard">
+                        <p id="cardDetails"> {{ i }} </p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    
+    <script>
+        //To check if the page is still loading
+        document.addEventListener('DOMContentLoaded', function() {
+            var videoFG = document.getElementById("videoFG");
+            videoFG.style.zIndex = "10000";
+
+            const sidebar = document.getElementById("sidebar");
+            const sidebarPanel = document.getElementById("sidebar-panel");
+
+            sidebar.addEventListener("mouseenter", function() {
+                sidebarPanel.style.display = "block";
+            });
+
+            sidebar.addEventListener("mouseleave", function() {
+                sidebarPanel.addEventListener("mouseleave", function() {
+                    var selectedInput = document.activeElement.classList.contains('login-input');
+
+                    if (!selectedInput)
+                        sidebarPanel.style.display = "none";
+                });
+            });
+        });
+
+       // Set next/back page defaults
+       window.onload = function() {
+            // Get the current URL of the webpage
+            var currentURL = window.location.href;
+            var pageNumberURL = currentURL.split('/movies?page=')[1];
+            var urlHome = currentURL.split('/movies')[1];
+
+            let pageFwd = parseInt(pageNumberURL) + 1;
+            let pageBack = parseInt(pageNumberURL) - 1;
+
+            let cardNext1 = document.getElementById("cardDetailsAnchor_next1");
+            let cardNext2 = document.getElementById("cardDetailsAnchor_next2");
+
+            let cardPrev1 = document.getElementById("cardDetailsAnchor_prev1");
+            let cardPrev2 = document.getElementById("cardDetailsAnchor_prev2");
+
+            if (cardNext1)
+                if (urlHome != "")
+                {
+                    cardNext1.href = "/movies?page=" + pageFwd;
+                    cardNext2.href = "/movies?page=" + pageFwd;
+                }
+                else
+                {
+                    cardNext1.href = "/movies?page=2";
+                    cardNext2.href = "/movies?page=2";
+                }
+
+            if (cardPrev1)
+            {
+                cardPrev1.href = "/movies?page=" + pageBack;
+                cardPrev2.href = "/movies?page=" + pageBack;
+            }
+
+            var videoFG = document.getElementById("videoFG");
+            videoFG.style.display = "none";
+        };
+
+        function showLoginPage() {
+            var loginPage = document.getElementById('login');
+            var signupForm = document.getElementById('signup-form');
+            var loginForm = document.getElementById('login-form');
+            var panelItems = document.getElementById('panel-items');
+
+            if (loginPage)
+            {
+                if (loginPage.style.display == "block")
+                {
+                    loginPage.style.display = "none";
+                    panelItems.style.display = "block";
+                }
+                else
+                {
+                    panelItems.style.display = "none";
+                    loginPage.style.display = "block";
+                    
+                    loginForm.style.display = "block";
+                    signupForm.style.display = "none";
+                }
+            }
+        }
+
+        function showLoginForm() {
+            var loginPage = document.getElementById('login');
+            var signupForm = document.getElementById('signup-form');
+            var loginForm = document.getElementById('login-form');
+            var panelItems = document.getElementById('panel-items');
+
+            if (loginPage)
+            {
+                panelItems.style.display = "none";
+                loginPage.style.display = "block";
+                
+                loginForm.style.display = "block";
+                signupForm.style.display = "none";
+            }
+        }
+
+        function showSignupPage() {
+            var loginPage = document.getElementById('login');
+            var signupForm = document.getElementById('signup-form');
+            var loginForm = document.getElementById('login-form');
+            var panelItems = document.getElementById('panel-items');
+
+            if (loginPage)
+            {
+                panelItems.style.display = "none";
+                loginPage.style.display = "block";
+                
+                loginForm.style.display = "none";
+                signupForm.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
