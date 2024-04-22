@@ -9,6 +9,13 @@ from App.controllers import (
 
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
 
+# Temp Imports
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func
+from App.models import Movie, User, Review, Movie_Review
+from App.database import db
+import json
+
 
 '''
 Page/Action Routes
@@ -23,17 +30,42 @@ def get_user_page():
 def identify_page():
     return render_template('message.html', title="Identify", message=f"You are logged in as {current_user.id} - {current_user.username}")
     
+# Auth signup
+@auth_views.route('/signup', methods=['POST'])
+def signup_user_view():
+    data = request.form
+    try:
+        user = User(data['display_name'], data['username'], data['password'])
+        
+        db.session.add(user)
+        db.session.commit()
+
+        token_data = json.dumps({'user_id': user.id}).encode('utf-8')
+
+        response = redirect('/home')
+        set_access_cookies(response, token_data)
+
+        token = login(data['username'], data['password'])
+        if token:
+            set_access_cookies(response, token)
+
+        return response
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify(message='Username already exists'), 400
 
 @auth_views.route('/login', methods=['POST'])
 def login_action():
     data = request.form
     token = login(data['username'], data['password'])
     response = redirect(request.referrer)
+
     if not token:
         flash('Bad username or password given'), 401
+        
     else:
         flash('Login Successful')
-        set_access_cookies(response, token) 
+        set_access_cookies(response, token)
     return response
 
 @auth_views.route('/logout', methods=['GET'])
