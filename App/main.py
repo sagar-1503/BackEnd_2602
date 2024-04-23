@@ -30,7 +30,7 @@ def add_views(app):
 def create_app(overrides={}):
     app = Flask(__name__, static_url_path='/static')
     load_config(app, overrides)
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://mydb_qz7t_user:N7fTmfbZttX1IOBLFLTLFoYtonStghGF@dpg-coj16gljm4es73a0dl20-a.oregon-postgres.render.com/mydb_qz7t'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://mydb_qz7t_user:N7fTmfbZttX1IOBLFLTLFoYtonStghGF@dpg-coj16gljm4es73a0dl20-a.oregon-postgres.render.com/mydb_qz7t'
     CORS(app)
     add_auth_context(app)
     photos = UploadSet('photos', TEXT + DOCUMENTS + IMAGES)
