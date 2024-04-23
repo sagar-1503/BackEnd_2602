@@ -7,6 +7,7 @@ from App.models import db, Movie, User
 from flask.cli import FlaskGroup
 import json
 import requests
+from sqlalchemy import create_engine, MetaData
 
 last_fetched_page = 1
 
