@@ -13,7 +13,7 @@ from App.controllers import (
     add_auth_context
 )
 
-from App.views import views
+# from App.views import views
 
 #Temp imports
 from App.models import Movie, User, Review, Movie_Review
@@ -21,11 +21,12 @@ from flask import request, redirect, url_for, flash
 from sqlalchemy import func
 import random, json
 from flask_jwt_extended import jwt_required, get_jwt_identity, current_user, unset_jwt_cookies, set_access_cookies
+import psycopg2
 
 
-def add_views(app):
-    for view in views:
-        app.register_blueprint(view)
+# def add_views(app):
+#     for view in views:
+#         app.register_blueprint(view)
 
 def create_app(overrides={}):
     app = Flask(__name__, static_url_path='/static')
@@ -35,14 +36,19 @@ def create_app(overrides={}):
     add_auth_context(app)
     photos = UploadSet('photos', TEXT + DOCUMENTS + IMAGES)
     configure_uploads(app, photos)
-    add_views(app)
+    # add_views(app)
     init_db(app)
     jwt = setup_jwt(app)
+
+    @app.route('/')
+    def index():
+        return render_template('layout.html')
     
     @jwt.invalid_token_loader
     @jwt.unauthorized_loader
     def custom_unauthorized_response(error):
         return render_template('401.html', error=error), 401
+
 
     # =================Temp Routes================
 
@@ -51,10 +57,13 @@ def create_app(overrides={}):
     def home_page():
         random_movie = Movie.query.order_by(func.random()).first()
 
-        while (random_movie.thumbnail == "Movie_Thumbnail_Link"):
+        while random_movie and random_movie.thumbnail == "Movie_Thumbnail_Link":
             random_movie = Movie.query.order_by(func.random()).first()
 
-        return render_template('home_page.html', random_movie=random_movie)
+        if random_movie:
+            return render_template('home_page.html', random_movie=random_movie)
+        else:
+            return render_template('home_page.html')
 
     # Movies Page
     @app.route('/movies', methods=['GET'])
