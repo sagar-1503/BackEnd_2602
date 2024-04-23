@@ -8,6 +8,8 @@ from flask.cli import FlaskGroup
 import json
 import requests
 from sqlalchemy import create_engine, MetaData
+from App.database import db, get_migrate
+from App.main import create_app
 
 def initialize():
     # Perfom an auth on the Movie List API 
