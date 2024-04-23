@@ -13,7 +13,7 @@ def initialize():
     # db.drop_all()
     db.create_all()
 
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(username="bob").first()
 
     if not user:
         create_user('BobTheBuilder', 'bob', 'bobpass')
