@@ -43,6 +43,8 @@ def create_app(overrides={}):
     def custom_unauthorized_response(error):
         return render_template('401.html', error=error), 401
 
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://mydb_qz7t_user:N7fTmfbZttX1IOBLFLTLFoYtonStghGF@dpg-coj16gljm4es73a0dl20-a:5432/mydb_qz7t'
+
     # =================Temp Routes================
 
     # Home Page
