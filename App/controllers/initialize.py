@@ -9,10 +9,7 @@ import json
 import requests
 from sqlalchemy import create_engine, MetaData
 
-last_fetched_page = 1
-
 def initialize():
-    global last_fetched_page
 
     genre_url = "https://api.themoviedb.org/3/genre/movie/list"
     genre_headers = {
@@ -29,10 +26,10 @@ def initialize():
     # Reflect the tables in the database
     metadata.reflect(bind=engine)
 
-    if 'user' in metadata.tables:
+    if 'movie' in metadata.tables:
         print("Table Found")
     else:
-        # db.create_all()
+        db.create_all()
         print("Table Not Found")
 
         user = User.query.filter_by(username="bob").first()
@@ -40,9 +37,9 @@ def initialize():
         if not user:
             create_user('BobTheBuilder', 'bob', 'bobpass')
 
-    # Import movie files from API
+        # Import movie files from API
 
-        for page in range(last_fetched_page,501):
+        for page in range(1,501):
             url = "https://api.themoviedb.org/3/discover/movie"
             params = {
                 "include_adult": "false",
@@ -116,7 +113,6 @@ def initialize():
 
                 db.session.add(new_movie)
             db.session.commit()
-            last_fetched_page = page
 
         print('database initialized')
 
