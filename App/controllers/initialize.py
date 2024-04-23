@@ -12,11 +12,7 @@ import requests
 def initialize():
     # db.drop_all()
     db.create_all()
-
-    user = User.query.filter_by(username="bob").first()
-
-    if not user:
-        create_user('BobTheBuilder', 'bob', 'bobpass')
+    create_user('BobTheBuilder', 'bob', 'bobpass')
 
     # Import movie files from API
 
