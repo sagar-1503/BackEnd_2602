@@ -25,7 +25,7 @@ def initialize():
     genre_response = requests.get(genre_url, headers=genre_headers)
     movie_genres = genre_response.json().get("genres", [])
 
-    for page in range(1,2):
+    for page in range(1,501):
         url = "https://api.themoviedb.org/3/discover/movie"
         params = {
             "include_adult": "false",
