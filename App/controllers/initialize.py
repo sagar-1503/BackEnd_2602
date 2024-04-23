@@ -71,6 +71,10 @@ def initialize():
             response = requests.get(url, params=params, headers=headers)
             movies = response.json().get('results', [])
 
+            if not movies:
+                print("No more movies found. Exiting the loop.")
+                break 
+
             for movie in movies:
                 existing_movie = Movie.query.filter_by(id=movie.get('id')).first()
                 if existing_movie:
@@ -126,7 +130,7 @@ def initialize():
                         new_movie.video_URL = "https://www.dailymotion.com/video/" + videos[0].key
 
                 db.session.add(new_movie)
-            db.session.commit()
+                db.session.commit()
 
         print('database initialized')
 
