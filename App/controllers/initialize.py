@@ -8,16 +8,7 @@ from flask.cli import FlaskGroup
 import json
 import requests
 
-
-# Perfom an auth on the Movie List API 
-authUrl = "https://api.themoviedb.org/3/authentication"
-
-authHeaders = {
-    "accept": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZDcyMThmOTE2Yzk2MWEyNjc3ZmI1ZTdjMjFmZmNjNyIsInN1YiI6IjY2MThkM2VlMGYwZGE1MDE3Y2RmNWI3YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MhyHjQ2gXlSLm0zjI5dEwX7nwQQ58hzd25wnCKC3fjo"
-}
-
-authResponse = requests.get(authUrl, headers=authHeaders)
+last_fetched_page = 1
 
 def initialize():
     # db.drop_all()
@@ -27,6 +18,16 @@ def initialize():
 
     if not user:
         create_user('BobTheBuilder', 'bob', 'bobpass')
+
+    # Perfom an auth on the Movie List API 
+    authUrl = "https://api.themoviedb.org/3/authentication"
+    
+    authHeaders = {
+        "accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZDcyMThmOTE2Yzk2MWEyNjc3ZmI1ZTdjMjFmZmNjNyIsInN1YiI6IjY2MThkM2VlMGYwZGE1MDE3Y2RmNWI3YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MhyHjQ2gXlSLm0zjI5dEwX7nwQQ58hzd25wnCKC3fjo"
+    }
+    
+    authResponse = requests.get(authUrl, headers=authHeaders)
 
     # Import movie files from API
 
@@ -44,7 +45,7 @@ def initialize():
     if movie_test:
         print('database already initialized')
     else:
-        for page in range(1,501):
+        for page in range(last_fetched_page, 501):
             url = "https://api.themoviedb.org/3/discover/movie"
             params = {
                 "include_adult": "false",
@@ -118,6 +119,7 @@ def initialize():
 
                 db.session.add(new_movie)
             db.session.commit()
+            last_fetched_page = page  # Update the last fetched page
 
         print('database initialized')
 
