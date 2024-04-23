@@ -3,7 +3,7 @@ from App.database import db
 
 
 # Temp Imports
-from App.models import db, Movie
+from App.models import db, Movie, User
 from flask.cli import FlaskGroup
 import json
 import requests
@@ -12,7 +12,11 @@ import requests
 def initialize():
     # db.drop_all()
     db.create_all()
-    create_user('BobTheBuilder', 'bob', 'bobpass')
+
+    user = User.query.filter_by(username=username).first()
+
+    if not user:
+        create_user('BobTheBuilder', 'bob', 'bobpass')
 
     # Import movie files from API
 
