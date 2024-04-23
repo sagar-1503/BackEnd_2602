@@ -10,6 +10,18 @@ import requests
 from sqlalchemy import create_engine, MetaData
 
 def initialize():
+    # Perfom an auth on the Movie List API 
+    authUrl = "https://api.themoviedb.org/3/authentication"
+
+    authHeaders = {
+        "accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZDcyMThmOTE2Yzk2MWEyNjc3ZmI1ZTdjMjFmZmNjNyIsInN1YiI6IjY2MThkM2VlMGYwZGE1MDE3Y2RmNWI3YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MhyHjQ2gXlSLm0zjI5dEwX7nwQQ58hzd25wnCKC3fjo"
+    }
+
+    authResponse = requests.get(authUrl, headers=authHeaders)
+
+    app = create_app()
+    migrate = get_migrate(app)
 
     genre_url = "https://api.themoviedb.org/3/genre/movie/list"
     genre_headers = {
