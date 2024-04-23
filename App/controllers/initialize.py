@@ -11,6 +11,8 @@ import requests
 last_fetched_page = 1
 
 def initialize():
+    global last_fetched_page
+    
     # db.drop_all()
     db.create_all()
 
