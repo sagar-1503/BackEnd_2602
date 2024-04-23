@@ -132,7 +132,7 @@ def initialize():
                 db.session.add(new_movie)
             db.session.commit()
 
-            print('database initialized')
+        print('database initialized')
 
 '''
 User Commands
