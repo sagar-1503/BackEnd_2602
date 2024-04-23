@@ -34,10 +34,7 @@ def initialize():
     if movie_test:
         print('database already initialized')
     else:
-        # Initialize an empty list to store movie objects
-        movies_to_commit = []
-
-        for page in range(1, 501):
+        for page in range(1,501):
             url = "https://api.themoviedb.org/3/discover/movie"
             params = {
                 "include_adult": "false",
@@ -86,7 +83,7 @@ def initialize():
                 new_movie.thumbnail = base_url + poster_path
                 new_movie.backdrop = base_url + backdrop_path
 
-                if new_movie.has_video:
+                if (new_movie.has_video):
                     # Perform query for the particular movie
                     video_URL = "https://api.themoviedb.org/3/movie/" + str(new_movie.id) + "/videos?language=en-US"
 
@@ -102,18 +99,14 @@ def initialize():
                     new_movie.video_name = videos[0].get('name', "Video_Name")
 
                     site = videos[0].get('site', 'YouTube')
-                    if site == "YouTube":
+                    if (site == "YouTube"):
                         new_movie.video_URL = "https://www.youtube.com/watch?v=" + videos[0].key
-                    elif site == "Vimeo":
+                    if (site == "Vimeo"):
                         new_movie.video_URL = "https://vimeo.com/" + videos[0].key
-                    elif site == "Dailymotion":
+                    if (site == "Dailymotion"):
                         new_movie.video_URL = "https://www.dailymotion.com/video/" + videos[0].key
 
-                # Add the new movie object to the list
-                movies_to_commit.append(new_movie)
+                db.session.add(new_movie)
+            db.session.commit()
 
-        # Commit all the movie objects to the database after the loop completes
-        db.session.add_all(movies_to_commit)
-        db.session.commit()
-
-        print('database initialized')
+            print('database initialized')
