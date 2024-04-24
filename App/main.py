@@ -21,7 +21,10 @@ from flask import request, redirect, url_for, flash
 from sqlalchemy import func
 import random, json
 from flask_jwt_extended import jwt_required, get_jwt_identity, current_user, unset_jwt_cookies, set_access_cookies
+from flask_jwt_extended import create_access_token, jwt_required, JWTManager, get_jwt_identity, verify_jwt_in_request
+from sqlalchemy.exc import IntegrityError
 import psycopg2
+from App.database import db
 
 
 # def add_views(app):
@@ -48,6 +51,59 @@ def create_app(overrides={}):
     @jwt.unauthorized_loader
     def custom_unauthorized_response(error):
         return render_template('401.html', error=error), 401
+
+    # Fixed
+
+    def login(username, password):
+        user = User.query.filter_by(username=username).first()
+        if user and user.check_password(password):
+            return create_access_token(identity=username)
+        return None
+
+    # Auth signup
+    @app.route('/signup', methods=['POST'])
+    def signup_user_view():
+        data = request.form
+        try:
+            user = User(data['display_name'], data['username'], data['password'])
+            
+            db.session.add(user)
+            db.session.commit()
+
+            token_data = json.dumps({'user_id': user.id}).encode('utf-8')
+
+            response = redirect('/home')
+            set_access_cookies(response, token_data)
+
+            token = login(data['username'], data['password'])
+            if token:
+                set_access_cookies(response, token)
+
+            return response
+        except IntegrityError:
+            db.session.rollback()
+            return jsonify(message='Username already exists'), 400
+
+    @app.route('/login', methods=['POST'])
+    def login_action():
+        data = request.form
+        token = login(data['username'], data['password'])
+        response = redirect(request.referrer)
+
+        if not token:
+            flash('Bad username or password given'), 401
+            
+        else:
+            flash('Login Successful')
+            set_access_cookies(response, token)
+        return response
+
+    @app.route('/logout', methods=['GET'])
+    def logout_action():
+        response = redirect(request.referrer) 
+        flash("Logged Out!")
+        unset_jwt_cookies(response)
+        return response
 
 
     # =================Temp Routes================
